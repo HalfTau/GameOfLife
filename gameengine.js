@@ -58,8 +58,10 @@ GameEngine.prototype.startInput = function () {
 
     this.ctx.canvas.addEventListener("click", function (e) {
         that.click = getXandY(e);
-        console.log(e);
+        let x = that.click.x;
+        let y = that.click.y;
         console.log(that.click.x + ' '+ that.click.y);
+        unit = new Unit(that, x * 20, y * 20);
     }, false);
 
     this.ctx.canvas.addEventListener("contextmenu", function (e) {
@@ -154,6 +156,7 @@ function Entity(game, x, y) {
     this.x = x;
     this.y = y;
     this.removeFromWorld = false;
+    this.game.addEntity(this);
 }
 
 Entity.prototype.update = function () {

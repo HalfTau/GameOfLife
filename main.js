@@ -64,6 +64,7 @@ Background.prototype.update = function () {
 };
 
 AM.queueDownload("./img/tile.PNG");
+AM.queueDownload("./img/unit.PNG");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
