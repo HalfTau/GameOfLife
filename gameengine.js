@@ -53,15 +53,14 @@ GameEngine.prototype.startInput = function () {
     }
 
     var that = this;
-    var fired = false;
     // event listeners are added here
 
     this.ctx.canvas.addEventListener("click", function (e) {
         that.click = getXandY(e);
         let x = that.click.x;
         let y = that.click.y;
-        console.log(that.click.x + ' '+ that.click.y);
-        unit = new Unit(that, x * 20, y * 20);
+        unit = new Unit(that, x, y);
+        that.map.mapList[y][x].addThing(unit);
     }, false);
 
     this.ctx.canvas.addEventListener("contextmenu", function (e) {
@@ -72,27 +71,10 @@ GameEngine.prototype.startInput = function () {
     }, false);
 
     this.ctx.canvas.addEventListener("keypress", function (e) {
-        if(!fired) {
-          fired = true;
-          if(e.code === "keyA") {
-            that.player.direction = "W"
-          }
-          if(e.code === "keyD") {
-            that.player.direction = "E"
-          }
-          if(e.code === "keyW") {
-            that.player.direction = "N"
-          }
-          if(e.code === "keyS") {
-            that.player.direction = "S"
-          }
-        }
           that.chars[e.code] = true;
-
     }, false);
 
     this.ctx.canvas.addEventListener("keyup", function (e) {
-      fired = false;
       that.chars[e.code] = false;
     }, false);
 
@@ -127,6 +109,15 @@ GameEngine.prototype.update = function () {
 
         entity.update();
     }
+    let tiles = this.map.mapList;
+    console.log(tiles[1][1].getNeighbors())
+    setInterval(function(){
+      for(let i = 0; i < tiles.length; i++) {
+        for(let j = 0; j < tiles[1].length; j++) {
+          console.log(tiles[j][i].getNeighbors());
+        }
+      }
+    }, 2000);
 }
 
 GameEngine.prototype.loop = function () {
@@ -156,7 +147,6 @@ function Entity(game, x, y) {
     this.x = x;
     this.y = y;
     this.removeFromWorld = false;
-    this.game.addEntity(this);
 }
 
 Entity.prototype.update = function () {

@@ -1,9 +1,6 @@
 function Map(gameEngine) {
     this.game = gameEngine;
-    this.simpleMapData = [];
     this.mapList = [];
-    // Note: not needed when you give mapData.
-
 }
 Map.prototype.constructor = Map;
 
@@ -16,22 +13,20 @@ Map.prototype.readMap = function (mapData) {
             x = j;
             y = i;
             tileType = mapData[x][y];
-            //console.log(twodtoisoX(x, y) + ' '+ twodtoisoY(x, y));
             var tile = new Tile(this.game, tileType, x, y);
-            //this.game.addEntity(tile);
             this.mapList[y][x] = tile;
         }
     }
 }
 
+
 // tiling going down
 function Tile(game, tileType, x, y) {
-    //this.animation = new Animation(ASSET_MANAGER.getAsset("./img/grass.png"), 0, 0, 58, 30, 1, .15, 1, true);
     this.gfxString = '';
-    this.normalImage = "./img/tile.PNG";
+    this.tileString = "./img/tile.PNG";
 
     if (tileType === 0) {
-        this.gfxString = this.normalImage;
+        this.gfxString = this.tileString;
     }
 
     this.thing = null;
@@ -42,6 +37,72 @@ function Tile(game, tileType, x, y) {
 }
 Tile.prototype = Object.create(Entity.prototype);
 Tile.prototype.constructor = Tile;
+
+Tile.prototype.addThing = function(thing) {
+  this.thing = thing;
+  this.game.addEntity(thing);
+}
+
+Tile.prototype.removeThing = function(thing) {
+  thing.removeFromWorld = true;
+  this.thing = null;
+}
+
+Tile.prototype.getNeighbors = function () {
+    let x = this.x;
+    let y = this.y;
+    let game = this.game;
+    neighborCount = 0;
+    if(x > 0) {
+      if(game.map.mapList[y][x - 1].thing != null) {
+        neighborCount++;
+      }
+    }
+    if( x < 40) {
+      if(game.map.mapList[y][x + 1].thing != null) {
+        neighborCount++;
+      }
+    }
+    if( y > 0) {
+      if(game.map.mapList[y - 1][x].thing != null) {
+        neighborCount++;
+      }
+      if(x > 0) {
+        if(game.map.mapList[y-1][x-1].thing != null) {
+          neighborCount++;
+        }
+      }
+      if(x < 40) {
+        if(game.map.mapList[y-1][x+1].thing != null) {
+          neighborCount++;
+        }
+      }
+
+    }
+    if(y < 40) {
+      if(game.map.mapList[y + 1][x].thing != null) {
+        neighborCount++;
+      }
+      if(x > 0) {
+        if(game.map.mapList[y+1][x-1].thing != null) {
+          neighborCount++;
+        }
+      }
+      if(x < 40) {
+        if(game.map.mapList[y+1][x+1].thing != null) {
+          neighborCount++;
+        }
+      }
+    }
+
+    return neighborCount;
+}
+Tile.prototype.hasUnit = function() {
+  if(this.thing != null) {
+    return true;
+  }
+  return false;
+}
 
 Tile.prototype.draw = function (ctx) {
     ctx.drawImage(

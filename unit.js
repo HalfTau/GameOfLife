@@ -9,8 +9,7 @@ function Unit(game, x, y) {
 };
 
 Unit.prototype.draw = function () {
-  console.log('hiasd');
-  this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x, this.y );
+  this.animation.drawFrame(this.game.clockTick, this.game.ctx, this.x * 20, this.y * 20 );
 
       Entity.prototype.draw.call(this);
 };
