@@ -1,14 +1,3 @@
-window.requestAnimFrame = (function () {
-    return window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            function (/* function */ callback, /* DOMElement */ element) {
-                window.setTimeout(callback, 1000 / 60);
-            };
-})();
-
 function GameEngine() {
     this.map = null;
     this.player = null;
@@ -18,7 +7,7 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
 }
-
+var going = false;
 GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
     this.surfaceWidth = this.ctx.canvas.width;
@@ -31,10 +20,9 @@ GameEngine.prototype.init = function (ctx) {
 GameEngine.prototype.start = function () {
     console.log("starting game");
     var that = this;
-    (function gameLoop() {
+    setInterval(function gameLoop() {
         that.loop();
-        requestAnimFrame(gameLoop, that.ctx.canvas);
-    })();
+    }, 1000);
 }
 
 GameEngine.prototype.startInput = function () {
@@ -54,13 +42,24 @@ GameEngine.prototype.startInput = function () {
 
     var that = this;
     // event listeners are added here
+    var btn = document.getElementById("toggle");
+
+    btn.addEventListener('click', function (e) {
+      if(btn.value === 'Start') {
+        going = true;
+        btn.value = 'Stop';
+      }
+      else {
+        going = false;
+        btn.value = 'Start';
+      }
+    });
 
     this.ctx.canvas.addEventListener("click", function (e) {
         that.click = getXandY(e);
         let x = that.click.x;
         let y = that.click.y;
-        unit = new Unit(that, x, y);
-        that.map.mapList[y][x].addThing(unit);
+        that.map.mapList[y][x].addThing();
     }, false);
 
     this.ctx.canvas.addEventListener("contextmenu", function (e) {
@@ -102,27 +101,69 @@ GameEngine.prototype.draw = function () {
 }
 
 GameEngine.prototype.update = function () {
+    console.log('new');
     var entitiesCount = this.entities.length;
-
-    for (var i = 0; i < entitiesCount; i++) {
-        var entity = this.entities[i];
-
-        entity.update();
-    }
     let tiles = this.map.mapList;
-    console.log(tiles[1][1].getNeighbors())
-    setInterval(function(){
-      for(let i = 0; i < tiles.length; i++) {
-        for(let j = 0; j < tiles[1].length; j++) {
-          console.log(tiles[j][i].getNeighbors());
+
+
+    let adds = [];
+    let jims = [];
+    let addsLen = 0;
+    let jimsLen = 0;
+    for(let i = 0; i < tiles.length; i++) {
+      for(let j = 0; j < tiles[1].length; j++) {
+        let ncount = tiles[j][i].getNeighbors();
+        if(tiles[j][i].hasUnit() === false) {
+          if(ncount === 3) {
+            console.log('hi');
+            adds.push(j);
+            adds.push(i);
+            addsLen += 2;
+          }
         }
       }
-    }, 2000);
+    }
+    for(let i = 0; i < tiles.length; i++) {
+      for(let j = 0; j < tiles[1].length; j++) {
+      let ncount = tiles[j][i].getNeighbors();
+      if(tiles[j][i].hasUnit() && (ncount < 2 || ncount > 3)) {
+        console.log('hi?');
+        jims.push(j);
+        jims.push(i);
+        jimsLen += 2;
+      }
+    }
+  }
+  for(let i = 0; i < jimsLen; i+= 2) {
+
+    let j = jims[i];
+    let b = jims[i + 1];
+        console.log('wtf ' + j + ' ' + b);
+    tiles[j][b].thing.removeFromWorld = true;
+    console.log(tiles[j][b].thing.removeFromWorld)
+    tiles[j][b].thing = null;
+  }
+
+  for(let i = 0; i < this.entities.length; i++) {
+    console.log(this.entities);
+    if(this.entities[i].removeFromWorld) {
+      console.log('splice');
+      this.entities.splice(i, 1);
+    }
+  }
+  for(let i = 0; i < addsLen; i+= 2) {
+    let j = adds[i];
+    let b = adds[i + 1];
+    tiles[j][b].addThing();
+  }
+
 }
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
-    this.update();
+    if(going) {
+      this.update();
+    }
     this.draw();
 }
 
