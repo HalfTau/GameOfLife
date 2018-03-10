@@ -24,7 +24,7 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     } else if (this.isDone()) {
         return;
     }
-
+      //just a sec
     var colIndex = this.currentFrame() % this.sheetWidth
     var rowIndex = Math.floor(this.currentFrame() / this.sheetWidth);
 
@@ -77,6 +77,6 @@ AM.downloadAll(function () {
 
     gameEngine.init(ctx);
     gameEngine.start();
-    
+
     console.log("All Done!");
 });

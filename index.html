@@ -6,7 +6,7 @@
 
 </head>
 <body>
-    <canvas id="gameWorld" tabindex="1" width="820" height="820" style="border: 1px solid brown; background: rgb(120, 154, 158)"></canvas>
+    <canvas id="gameWorld" tabindex="1" width="1000" height="1000" style="border: 1px solid brown; background: rgb(120, 154, 158)"></canvas>
     <br />
     <b>ANOTHER</b> game of life implementation. <br />Draw freehand by clicking on the grid, or select some cool shapes from the drop down below and add them by clicking the add button.
     <br /> Add more than one shape to see how they interact! <br />Click <b>Start</b> when you're ready!
@@ -17,7 +17,9 @@
     <option value="acorn">Acorn</option>
     </select>
     <input type="button" id="add" value="add">
+    <input type="button" id="clear" value="clear">
     <title>Game Project Shell</title>
+    <script type="text/javascript" src="http://localhost:8888/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="./mapData.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./map.js"></script>

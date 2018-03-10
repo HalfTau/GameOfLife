@@ -123,6 +123,18 @@ GameEngine.prototype.startInput = function () {
 
     }, false);
 
+    var btnClear = document.getElementById("clear");
+
+    btnClear.addEventListener("click", function (e) {
+      for(let i = 0; i < that.map.mapList.length; i++) {
+        for(let j = 0; j < that.map.mapList[1].length; j++) { //whoops
+          if(that.map.mapList[j][i].hasUnit()) {
+            that.map.mapList[j][i].thing.removeFromWorld = true;
+            that.map.mapList[j][i].thing = null;
+          }
+        }
+      }
+    });
     this.ctx.canvas.addEventListener("contextmenu", function (e) {
         that.click = getXandY(e);
         console.log(e);
