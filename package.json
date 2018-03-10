@@ -1,0 +1,26 @@
+{
+  "name": "gameoflife",
+  "version": "1.0.0",
+  "description": "HW3",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HalfTau/GameOfLife.git"
+  },
+  "keywords": [
+    "a",
+    "thing"
+  ],
+  "author": "Bryan Sands",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HalfTau/GameOfLife/issues"
+  },
+  "homepage": "https://github.com/HalfTau/GameOfLife#readme",
+  "dependencies": {
+    "socket.io": "^2.0.4"
+  }
+}
