@@ -101,19 +101,23 @@ GameEngine.prototype.draw = function () {
 }
 
 GameEngine.prototype.update = function () {
+  for(let i = 0; i < this.entities.length; i++) {
+    console.log(this.entities);
+    if(this.entities[i].removeFromWorld) {
+      console.log('splice');
+      this.entities.splice(i, 1);
+    }
+  }
     console.log('new');
     var entitiesCount = this.entities.length;
-    let tiles = this.map.mapList;
-
-
     let adds = [];
     let jims = [];
     let addsLen = 0;
     let jimsLen = 0;
-    for(let i = 0; i < tiles.length; i++) {
-      for(let j = 0; j < tiles[1].length; j++) {
-        let ncount = tiles[j][i].getNeighbors();
-        if(tiles[j][i].hasUnit() === false) {
+    for(let i = 0; i < this.map.mapList.length; i++) {
+      for(let j = 0; j < this.map.mapList[1].length; j++) {
+        let ncount = this.map.mapList[j][i].getNeighbors();
+        if(this.map.mapList[j][i].hasUnit() === false) {
           if(ncount === 3) {
             console.log('hi');
             adds.push(j);
@@ -123,10 +127,10 @@ GameEngine.prototype.update = function () {
         }
       }
     }
-    for(let i = 0; i < tiles.length; i++) {
-      for(let j = 0; j < tiles[1].length; j++) {
-      let ncount = tiles[j][i].getNeighbors();
-      if(tiles[j][i].hasUnit() && (ncount < 2 || ncount > 3)) {
+    for(let i = 0; i < this.map.mapList.length; i++) {
+      for(let j = 0; j < this.map.mapList[1].length; j++) {
+      let ncount = this.map.mapList[j][i].getNeighbors();
+      if(this.map.mapList[j][i].hasUnit() && (ncount < 2 || ncount > 3)) {
         console.log('hi?');
         jims.push(j);
         jims.push(i);
@@ -139,9 +143,15 @@ GameEngine.prototype.update = function () {
     let j = jims[i];
     let b = jims[i + 1];
         console.log('wtf ' + j + ' ' + b);
-    tiles[j][b].thing.removeFromWorld = true;
-    console.log(tiles[j][b].thing.removeFromWorld)
-    tiles[j][b].thing = null;
+    this.map.mapList[j][b].thing.removeFromWorld = true;
+    this.entities.indexOf(this.map.mapList[j][b]).removeFromWorld = true;
+    console.log(this.map.mapList[j][b].thing.removeFromWorld);
+    this.map.mapList[j][b].thing = null;
+  }
+  for(let i = 0; i < addsLen; i+= 2) {
+    let j = adds[i];
+    let b = adds[i + 1];
+    this.map.mapList[j][b].addThing();
   }
 
   for(let i = 0; i < this.entities.length; i++) {
@@ -149,22 +159,19 @@ GameEngine.prototype.update = function () {
     if(this.entities[i].removeFromWorld) {
       console.log('splice');
       this.entities.splice(i, 1);
+      i--;
     }
-  }
-  for(let i = 0; i < addsLen; i+= 2) {
-    let j = adds[i];
-    let b = adds[i + 1];
-    tiles[j][b].addThing();
   }
 
 }
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
+
+    this.draw();
     if(going) {
       this.update();
     }
-    this.draw();
 }
 
 function Timer() {
