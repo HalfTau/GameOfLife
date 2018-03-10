@@ -39,9 +39,12 @@ Tile.prototype = Object.create(Entity.prototype);
 Tile.prototype.constructor = Tile;
 
 Tile.prototype.addThing = function() {
-  unit = new Unit(this.game, this.x, this.y);
-  this.thing = unit;
-  this.game.entities.push(this.thing);
+  if(this.thing === null) {
+    unit = new Unit(this.game, this.x, this.y);
+    this.thing = unit;
+    this.game.entities.push(this.thing);
+  }
+
 }
 
 Tile.prototype.removeThing = function(thing) {

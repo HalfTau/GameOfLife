@@ -8,6 +8,7 @@ function GameEngine() {
     this.surfaceHeight = null;
 }
 var going = false;
+var ind = 5;
 GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
     this.surfaceWidth = this.ctx.canvas.width;
@@ -42,16 +43,71 @@ GameEngine.prototype.startInput = function () {
 
     var that = this;
     // event listeners are added here
-    var btn = document.getElementById("toggle");
+    var btnStart = document.getElementById("toggle");
 
-    btn.addEventListener('click', function (e) {
-      if(btn.value === 'Start') {
+    btnStart.addEventListener('click', function (e) {
+      if(btnStart.value === 'Start') {
         going = true;
-        btn.value = 'Stop';
+        btnStart.value = 'Stop';
       }
       else {
         going = false;
-        btn.value = 'Start';
+        btnStart.value = 'Start';
+      }
+    });
+    var btnAdd = document.getElementById("add");
+    var ddl = document.getElementById("toolSelect");
+    btnAdd.addEventListener('click', function (e) {
+      if(ddl.options[ddl.selectedIndex].value === "smallinf") {
+        that.map.mapList[ind][1].addThing();
+        that.map.mapList[ind][2].addThing();
+        that.map.mapList[ind][3].addThing();
+        that.map.mapList[ind][4].addThing();
+        that.map.mapList[ind][5].addThing();
+        that.map.mapList[ind][6].addThing();
+        that.map.mapList[ind][7].addThing();
+        that.map.mapList[ind][8].addThing();
+        that.map.mapList[ind][10].addThing();
+        that.map.mapList[ind][11].addThing();
+        that.map.mapList[ind][12].addThing();
+        that.map.mapList[ind][13].addThing();
+        that.map.mapList[ind][14].addThing();
+        that.map.mapList[ind][18].addThing();
+        that.map.mapList[ind][19].addThing();
+        that.map.mapList[ind][20].addThing();
+        that.map.mapList[ind][26].addThing();
+        that.map.mapList[ind][27].addThing();
+        that.map.mapList[ind][28].addThing();
+        that.map.mapList[ind][29].addThing();
+        that.map.mapList[ind][30].addThing();
+        that.map.mapList[ind][31].addThing();
+        that.map.mapList[ind][32].addThing();
+        that.map.mapList[ind][34].addThing();
+        that.map.mapList[ind][35].addThing();
+        that.map.mapList[ind][36].addThing();
+        that.map.mapList[ind][37].addThing();
+        that.map.mapList[ind][38].addThing();
+        that.map.mapList[ind][39].addThing();
+        ind += 2;
+      } else if(ddl.options[ddl.selectedIndex].value === "bryansgoof") {
+        that.map.mapList[ind][1].addThing();
+        that.map.mapList[ind][2].addThing();
+        that.map.mapList[ind][3].addThing();
+        that.map.mapList[ind][4].addThing();
+        that.map.mapList[ind][5].addThing();
+        that.map.mapList[ind][7].addThing();
+        that.map.mapList[ind][8].addThing();
+        that.map.mapList[ind][9].addThing();
+        ind+= 2;
+      } else if(ddl.options[ddl.selectedIndex].value === "acorn") {
+        let ind2 = ind + 10;
+        that.map.mapList[ind][4].addThing();
+        that.map.mapList[ind][5].addThing();
+        that.map.mapList[ind - 2][5].addThing();
+        that.map.mapList[ind - 1][7].addThing();
+        that.map.mapList[ind][8].addThing();
+        that.map.mapList[ind][9].addThing();
+        that.map.mapList[ind][10].addThing();
       }
     });
 
@@ -59,7 +115,12 @@ GameEngine.prototype.startInput = function () {
         that.click = getXandY(e);
         let x = that.click.x;
         let y = that.click.y;
+
         that.map.mapList[y][x].addThing();
+
+
+
+
     }, false);
 
     this.ctx.canvas.addEventListener("contextmenu", function (e) {

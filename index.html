@@ -8,12 +8,15 @@
 <body>
     <canvas id="gameWorld" tabindex="1" width="820" height="820" style="border: 1px solid brown; background: rgb(120, 154, 158)"></canvas>
     <br />
-    <b>ANOTHER</b> game of life implementation<br />
+    <b>ANOTHER</b> game of life implementation. <br />Draw freehand by clicking on the grid, or select some cool shapes from the drop down below and add them by clicking the add button.
+    <br /> Add more than one shape to see how they interact! <br />Click <b>Start</b> when you're ready!
+    <input type="button" id="toggle" value="Start"><br />
     <select id="toolSelect">
-    <option value="1">One</option>
-    <option value="2">Two</option>
+    <option value="smallinf">Smallest Infinite Growth</option>
+    <option value="bryansgoof">Bryan's Goof (ripoff)</option>
+    <option value="acorn">Acorn</option>
     </select>
-    <input type="button" id="toggle" value="Start">
+    <input type="button" id="add" value="add">
     <title>Game Project Shell</title>
     <script type="text/javascript" src="./mapData.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
