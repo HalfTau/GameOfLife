@@ -9,6 +9,31 @@ function GameEngine() {
 }
 var going = false;
 var ind = 5;
+var socket = io.connect("http://24.16.255.56:8888");
+var unitdata;
+ socket.on("connect", function() {
+   console.log("Socket connected.")
+ });
+ socket.on("disconnect", function () {
+   console.log("Socket disconnected.")
+ });
+ socket.on("reconnect", function () {
+   console.log("Socket reconnected.")
+ });
+ socket.on("load", function (data) {
+    going = false;
+    unitdata = JSON.parse(data['entities'])
+    console.log(JSON.parse(data['entities']));
+
+    loadupUnits();
+});
+
+function loadupUnits() {
+  for(let i = 0; i < unitdata.length; i++) {
+    gameEngine.map.mapList[unitdata[i].y][unitdata[i].x].addThing();
+  }
+}
+
 GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
     this.surfaceWidth = this.ctx.canvas.width;
@@ -103,7 +128,6 @@ GameEngine.prototype.startInput = function () {
         let ind2 = ind + 10;
         that.map.mapList[ind][4].addThing();
         that.map.mapList[ind][5].addThing();
-        that.map.mapList[ind - 2][5].addThing();
         that.map.mapList[ind - 1][7].addThing();
         that.map.mapList[ind][8].addThing();
         that.map.mapList[ind][9].addThing();
@@ -134,6 +158,19 @@ GameEngine.prototype.startInput = function () {
           }
         }
       }
+    });
+    var btnSave = document.getElementById("save");
+    btnSave.addEventListener("click", function (e) {
+        //save code
+        console.log('save the data!');
+        let entTemp = JSON.stringify(that.entities, ['x', 'y']);
+        socket.emit("save", {studentname: "Bryan Sands", statename: 'lifeState', entities: entTemp});
+    });
+    var btnLoad = document.getElementById("load");
+    btnLoad.addEventListener("click", function (e) {
+        // load code
+        console.log('load the data!');
+        socket.emit("load", {studentname: "Bryan Sands", statename: 'lifeState'});
     });
     this.ctx.canvas.addEventListener("contextmenu", function (e) {
         that.click = getXandY(e);
@@ -179,46 +216,49 @@ GameEngine.prototype.update = function () {
       this.entities.splice(i, 1);
     }
   }
-    var entitiesCount = this.entities.length;
-    let adds = [];
-    let jims = [];
-    let addsLen = 0;
-    let jimsLen = 0;
-    for(let i = 0; i < this.map.mapList.length; i++) {
-      for(let j = 0; j < this.map.mapList[1].length; j++) {
-        let ncount = this.map.mapList[j][i].getNeighbors();
-        if(this.map.mapList[j][i].hasUnit() === false) {
-          if(ncount === 3) {
-            adds.push(j);
-            adds.push(i);
-            addsLen += 2;
+    if(going) {
+      var entitiesCount = this.entities.length;
+      let adds = [];
+      let jims = [];
+      let addsLen = 0;
+      let jimsLen = 0;
+      for(let i = 0; i < this.map.mapList.length; i++) {
+        for(let j = 0; j < this.map.mapList[1].length; j++) {
+          let ncount = this.map.mapList[j][i].getNeighbors();
+          if(this.map.mapList[j][i].hasUnit() === false) {
+            if(ncount === 3) {
+              adds.push(j);
+              adds.push(i);
+              addsLen += 2;
+            }
           }
         }
       }
-    }
-    for(let i = 0; i < this.map.mapList.length; i++) {
-      for(let j = 0; j < this.map.mapList[1].length; j++) {
-      let ncount = this.map.mapList[j][i].getNeighbors();
-      if(this.map.mapList[j][i].hasUnit() && (ncount < 2 || ncount > 3)) {
-        jims.push(j);
-        jims.push(i);
-        jimsLen += 2;
+      for(let i = 0; i < this.map.mapList.length; i++) {
+        for(let j = 0; j < this.map.mapList[1].length; j++) {
+        let ncount = this.map.mapList[j][i].getNeighbors();
+        if(this.map.mapList[j][i].hasUnit() && (ncount < 2 || ncount > 3)) {
+          jims.push(j);
+          jims.push(i);
+          jimsLen += 2;
+        }
       }
     }
-  }
-  for(let i = 0; i < jimsLen; i+= 2) {
+    for(let i = 0; i < jimsLen; i+= 2) {
 
-    let j = jims[i];
-    let b = jims[i + 1];
-    this.map.mapList[j][b].thing.removeFromWorld = true;
-    this.entities.indexOf(this.map.mapList[j][b]).removeFromWorld = true;
-    this.map.mapList[j][b].thing = null;
-  }
-  for(let i = 0; i < addsLen; i+= 2) {
-    let j = adds[i];
-    let b = adds[i + 1];
-    this.map.mapList[j][b].addThing();
-  }
+      let j = jims[i];
+      let b = jims[i + 1];
+      this.map.mapList[j][b].thing.removeFromWorld = true;
+      this.entities.indexOf(this.map.mapList[j][b]).removeFromWorld = true;
+      this.map.mapList[j][b].thing = null;
+    }
+    for(let i = 0; i < addsLen; i+= 2) {
+      let j = adds[i];
+      let b = adds[i + 1];
+      this.map.mapList[j][b].addThing();
+    }
+
+    }
 
   for(let i = 0; i < this.entities.length; i++) {
     if(this.entities[i].removeFromWorld) {
@@ -231,11 +271,9 @@ GameEngine.prototype.update = function () {
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
-
+    this.update();
     this.draw();
-    if(going) {
-      this.update();
-    }
+
 }
 
 function Timer() {

@@ -1,5 +1,5 @@
 var AM = new AssetManager();
-
+    var gameEngine = new GameEngine();
 function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, sheetWidth, frameDuration, frames, loop, scale) {
     this.spriteSheet = spriteSheet;
     this.startX = startX * frameWidth;
@@ -13,6 +13,34 @@ function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, sheetWi
     this.elapsedTime = 0;
     this.loop = loop;
     this.scale = scale;
+}
+
+var socket = io.connect("http://24.16.255.56:8888");
+var unitdata;
+ socket.on("connect", function() {
+   console.log("Socket connected.")
+ });
+ socket.on("disconnect", function () {
+   console.log("Socket disconnected.")
+ });
+ socket.on("reconnect", function () {
+   console.log("Socket reconnected.")
+ });
+ socket.on("load", function (data) {
+    going = false;
+    unitdata = JSON.parse(data['entities'])
+
+    loadupUnits();
+});
+
+function loadupUnits() {
+  for(let i = 0; i < gameEngine.entities.length; i++) {
+    gameEngine.entities.splice(i, 1);
+    i--;
+  }
+  for(let i = 0; i < unitdata.length; i++) {
+    gameEngine.map.mapList[unitdata[i].y][unitdata[i].x].addThing();
+  }
 }
 
 Animation.prototype.drawFrame = function (tick, ctx, x, y) {
@@ -69,7 +97,7 @@ AM.queueDownload("./img/unit.PNG");
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");
-    var gameEngine = new GameEngine();
+
 
     gameEngine.map = new Map(gameEngine);
 
