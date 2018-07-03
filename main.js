@@ -15,23 +15,23 @@ function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, sheetWi
     this.scale = scale;
 }
 
-var socket = io.connect("http://24.16.255.56:8888");
-var unitdata;
- socket.on("connect", function() {
-   console.log("Socket connected.")
- });
- socket.on("disconnect", function () {
-   console.log("Socket disconnected.")
- });
- socket.on("reconnect", function () {
-   console.log("Socket reconnected.")
- });
- socket.on("load", function (data) {
-    going = false;
-    unitdata = JSON.parse(data['entities'])
-
-    loadupUnits();
-});
+// var socket = io.connect("http://24.16.255.56:8888");
+// var unitdata;
+//  socket.on("connect", function() {
+//    console.log("Socket connected.")
+//  });
+//  socket.on("disconnect", function () {
+//    console.log("Socket disconnected.")
+//  });
+//  socket.on("reconnect", function () {
+//    console.log("Socket reconnected.")
+//  });
+//  socket.on("load", function (data) {
+//     going = false;
+//     unitdata = JSON.parse(data['entities'])
+//
+//     loadupUnits();
+// });
 
 function loadupUnits() {
   for(let i = 0; i < gameEngine.entities.length; i++) {

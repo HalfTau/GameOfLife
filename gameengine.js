@@ -9,30 +9,7 @@ function GameEngine() {
 }
 var going = false;
 var ind = 5;
-var socket = io.connect("http://24.16.255.56:8888");
-var unitdata;
- socket.on("connect", function() {
-   console.log("Socket connected.")
- });
- socket.on("disconnect", function () {
-   console.log("Socket disconnected.")
- });
- socket.on("reconnect", function () {
-   console.log("Socket reconnected.")
- });
- socket.on("load", function (data) {
-    going = false;
-    unitdata = JSON.parse(data['entities'])
-    console.log(JSON.parse(data['entities']));
 
-    loadupUnits();
-});
-
-function loadupUnits() {
-  for(let i = 0; i < unitdata.length; i++) {
-    gameEngine.map.mapList[unitdata[i].y][unitdata[i].x].addThing();
-  }
-}
 
 GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
